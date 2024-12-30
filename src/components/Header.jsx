@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { FaSearch } from "react-icons/fa";
+import { SignedIn , SignedOut, UserButton } from '@clerk/nextjs';
 
 
 const Header = () => {
@@ -18,9 +19,15 @@ const Header = () => {
     </div>
 
     <ul className='hidden  md:flex gap-4 text-slate-900 text-[1rem]'>
-      <li>Home</li>
-      <li>About</li>
-      <li>Sign In</li>
+    <Link href={"/"}><li>Home</li></Link>
+    <Link href={"/about"}><li>About</li></Link>
+      <SignedIn>
+        <UserButton/>
+      </SignedIn>
+
+      <SignedOut>
+      <Link href={"/sign-in"}><li>Sign In</li></Link>
+      </SignedOut>
     </ul>
    </div>
    </>
