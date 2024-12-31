@@ -1,33 +1,35 @@
 import mongoose from "mongoose";
 
-
-const userSchema = new mongoose.schema(
+// Correctly use `mongoose.Schema`
+const userSchema = new mongoose.Schema(
   {
     ClerkId: {
-      type:String,
-      required:true,
-      unique:true
+      type: String,
+      required: true,
+      unique: true,
     },
     firstName: {
-      type:String,
-      required:true,
+      type: String,
+      required: true,
     },
     lastName: {
-      type:String,
-      required:true,
+      type: String,
+      required: true,
     },
     email: {
-      type:String,
-      required:true,
-      unique:true
+      type: String,
+      required: true,
+      unique: true,
     },
     profilePhoto: {
-      type:String,
-      required:true,
-    }
-  }, {timestamps :true}
-)
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
+// Correctly use `mongoose.models`
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-const User = mongoose.models.User || mongoose.model('User' , userSchema);
 export default User;
