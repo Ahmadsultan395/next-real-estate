@@ -53,12 +53,12 @@ export async function POST(req) {
 
   if (eventType === "user.created" || eventType === "user.updated") {
     // Check for valid env and data
-    if (!env?.data) {
+    if (!evt?.data) {
       console.log("Invalid data for event type", eventType);
       return new Response("Invalid data", { status: 400 });
     }
   
-    const { first_name, last_name, image_url, email_addresses } = env.data;
+    const { first_name, last_name, image_url, email_addresses } = evt.data;
   
     try {
       const user = await CreateOrUpdateUser(id, first_name, last_name, email_addresses, image_url);
