@@ -72,7 +72,7 @@ export async function POST(req) {
               }
             });
           } catch (error) {
-            console.error(error, "Could not update the meta user");
+            console.error(error, "Could not update the meta user ,,");
           }
         }
       } else {
