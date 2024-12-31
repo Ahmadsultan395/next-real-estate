@@ -1,5 +1,7 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
+import { CreateOrUpdateUser, deleteUser } from '@/lib/actions/user'
+import { clerkClient } from '@clerk/nextjs/server'
 
 export async function POST(req) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET
@@ -48,17 +50,47 @@ export async function POST(req) {
   // For this guide, log payload to console
   const { id } = evt.data
   const eventType = evt.type
-  console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
-  console.log('Webhook payload:', body)
 
+  if (eventType === "user.created" || eventType === "user.updated") {
+    const {first_name , last_name , image_url , email_addresses} = env?.data;
 
-  if (evt.type === 'user.created') {
-    console.log('user.created')
+    try {
+      const user = await CreateOrUpdateUser(
+        id, first_name, last_name, email_addresses, image_url
+      )
+      if (user && eventType === "user.crated") {
+        try {
+          await clerkClient.user.updateUserMetaData(id , {
+            publicMetaData: {
+              userMongoId : user.id
+            }
+          })
+        } catch (error) {
+          console.log(error , "could not update the meta user ")
+        }
+      }
+    } catch (error) {
+      console.log(error , "could not update and create the meta user ")
+      
+    }
   }
-  if (evt.type === 'user.updated') {
-    console.log('user.updated')
-  } if (evt.type === 'user.deleted') {
-    console.log('user.deleted')
-  }
+  
+  if (eventType === 'user.deleted') {
+      try {
+        await deleteUser(id)
+      } catch (error) {
+        console.log(error , "error could not delete user ")
+        return new Response("error could not delete user", {status:404})
+      }
+    }
+
+  // if (evt.type === 'user.created') {
+  //   console.log('user.created')
+  // }
+  // if (evt.type === 'user.updated') {
+  //   console.log('user.updated')
+  // } if (evt.type === 'user.deleted') {
+  //   console.log('user.deleted')
+  // }
   return new Response('Webhook received', { status: 200 })
 }
