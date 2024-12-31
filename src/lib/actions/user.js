@@ -16,7 +16,7 @@ export const CreateOrUpdateUser = async (
 
     await connect();
     const user = await User.findOneAndUpdate(
-      { clerkId: id },
+      { ClerkId: id },
       {
         $set: {
           firstName: first_name,
@@ -42,7 +42,7 @@ export const deleteUser = async (id) => {
     }
 
     await connect();
-    await User.findOneAndDelete({ clerkId: id });
+    await User.findOneAndDelete({ ClerkId: id });
   } catch (error) {
     console.log(error, "Error could not delete the user");
     throw error;  // Optionally rethrow the error
