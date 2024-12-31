@@ -58,7 +58,7 @@ export async function POST(req) {
       const user = await CreateOrUpdateUser(
         id, first_name, last_name, email_addresses, image_url
       )
-      if (user && eventType === "user.crated") {
+      if (user && eventType === "user.created") {
         try {
           await clerkClient.users.updateUserMetaData(id , {
             publicMetaData: {
