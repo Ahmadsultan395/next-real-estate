@@ -72,7 +72,7 @@ export async function POST(req) {
               }
             });
           } catch (error) {
-            console.error(error, "Could not update the meta user ,,");
+            console.error(error, "Could not update the meta user testing for deployment");
           }
         }
       } else {
@@ -99,15 +99,6 @@ export async function POST(req) {
       return new Response("Error: Could not delete user", { status: 500 });
     }
   }
-  
 
-  // if (evt.type === 'user.created') {
-  //   console.log('user.created')
-  // }
-  // if (evt.type === 'user.updated') {
-  //   console.log('user.updated')
-  // } if (evt.type === 'user.deleted') {
-  //   console.log('user.deleted')
-  // }
   return new Response('Webhook received', { status: 200 })
 }
