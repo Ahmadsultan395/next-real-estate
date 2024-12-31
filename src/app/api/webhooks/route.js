@@ -52,37 +52,54 @@ export async function POST(req) {
   const eventType = evt.type
 
   if (eventType === "user.created" || eventType === "user.updated") {
-    const {first_name , last_name , image_url , email_addresses} = env?.data;
-
+    // Check for valid env and data
+    if (!env?.data) {
+      console.log("Invalid data for event type", eventType);
+      return new Response("Invalid data", { status: 400 });
+    }
+  
+    const { first_name, last_name, image_url, email_addresses } = env.data;
+  
     try {
-      const user = await CreateOrUpdateUser(
-        id, first_name, last_name, email_addresses, image_url
-      )
-      if (user && eventType === "user.created") {
-        try {
-          await clerkClient.users.updateUserMetaData(id , {
-            publicMetaData: {
-              userMongoId : user.id
-            }
-          })
-        } catch (error) {
-          console.log(error , "could not update the meta user ")
+      const user = await CreateOrUpdateUser(id, first_name, last_name, email_addresses, image_url);
+  
+      if (user) {
+        if (eventType === "user.created") {
+          try {
+            await clerkClient.users.updateUserMetaData(id, {
+              publicMetaData: {
+                userMongoId: user.id
+              }
+            });
+          } catch (error) {
+            console.error(error, "Could not update the meta user");
+          }
         }
+      } else {
+        console.log("User creation or update failed.");
       }
     } catch (error) {
-      console.log(error , "could not update and create the meta user ")
-      
+      console.error(error, "Could not create or update the user.");
     }
   }
   
-  if (eventType === 'user.deleted') {
-      try {
-        await deleteUser(id)
-      } catch (error) {
-        console.log(error , "error could not delete user ")
-        return new Response("error could not delete user", {status:404})
+  if (eventType === "user.deleted") {
+    try {
+      const deletionResult = await deleteUser(id);
+  
+      // Return success response if user is deleted
+      if (deletionResult) {
+        return new Response("User deleted successfully", { status: 200 });
+      } else {
+        console.log("Failed to delete user with id:", id);
+        return new Response("User not found", { status: 404 });
       }
+    } catch (error) {
+      console.error(error, "Error: Could not delete user.");
+      return new Response("Error: Could not delete user", { status: 500 });
     }
+  }
+  
 
   // if (evt.type === 'user.created') {
   //   console.log('user.created')
