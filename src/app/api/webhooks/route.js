@@ -60,7 +60,7 @@ export async function POST(req) {
       )
       if (user && eventType === "user.crated") {
         try {
-          await clerkClient.user.updateUserMetaData(id , {
+          await clerkClient.users.updateUserMetaData(id , {
             publicMetaData: {
               userMongoId : user.id
             }
