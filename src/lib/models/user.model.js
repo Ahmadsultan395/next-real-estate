@@ -1,6 +1,4 @@
-import { Timestamp } from "mongodb";
 import mongoose from "mongoose";
-import { unique } from "next/dist/build/utils";
 
 
 const userSchema = new mongoose.schema(
